@@ -9,6 +9,7 @@ from django.template import RequestContext
 from easylogin.auth import generate_code, AUTH_CODE_TIMEOUT
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.http import QueryDict
 
 import qrcode
 
@@ -20,8 +21,14 @@ ERROR_TEMPLATE = getattr(settings, "EASYLOGIN_ERROR_TEMPLATE",
     "easylogin/templates/error.html")
 
 
+def make_query_url(url, query):
+    encoded = QueryDict('', mutable=True)
+    encoded.update(query)
+    return "%s?%s" % (url, encoded.urlencode())
+
 @login_required
-def gen_qr_code(request, auth_code=None):
+def gen_qr_code(request):
+    auth_code = request.GET.get("authCode")
     if not auth_code:
         auth_code = generate_code(request.user)
     current_site = get_current_site(request)
@@ -53,5 +60,7 @@ def credentials_view(request):
         "user": request.user,
         "auth_code": auth_code,
         "expires_in": AUTH_CODE_TIMEOUT,
-        "qr_url": reverse("easylogin_qr", kwargs={"auth_code": auth_code})
+        "qr_url": make_query_url(
+            reverse("easylogin_qr"),
+            {"authCode": auth_code})
         })
