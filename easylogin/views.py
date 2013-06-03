@@ -46,7 +46,8 @@ def gen_qr_code(request):
     img.save(response, "PNG")
     return response
 
-def code_login(request, auth_code):
+def code_login(request):
+    auth_code = request.GET.get("authCode")
     user = authenticate(code=auth_code)
     if user is not None:
         if user.is_active:
