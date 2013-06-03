@@ -1,13 +1,16 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.utils.module_loading import import_by_path
 from time import time
 
 
+_formatters = ['easylogin.formatters.nine_numbers']
+
+_AUTH_CODE_FORMATTERS_L = getattr(settings, "AUTH_CODE_FORMATTERS", _formatters)
 AUTH_CODE_TIMEOUT = getattr(settings, "AUTH_CODE_TIMEOUT", 60)
 AUTH_CODE_SALT = getattr(settings, "AUTH_CODE_SALT", settings.SECRET_KEY)
-AUTH_CODE_FORMATTERS = getattr(settings, "AUTH_CODE_FORMATTERS", [])
-
+AUTH_CODE_FORMATTERS = [import_by_path(elem) for elem in _AUTH_CODE_FORMATTERS_L]
 
 def _gen_user_key(user):
     return "AUTH-EASYLOGIN-%d" % (user.id,)
