@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import get_current_site
 from django.core.urlresolvers import reverse as django_reverse
@@ -48,6 +48,7 @@ def gen_qr_code(request):
 
 def code_login(request):
     auth_code = request.GET.get("authCode")
+    logout(request)
     user = authenticate(code=auth_code)
     if user is not None:
         if user.is_active:
