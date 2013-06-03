@@ -4,11 +4,10 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
-from os import path
 from time import time
 
 
-def import_by_path(module_name):
+def import_by_path(path):
     i = path.rfind('.')
     module, attr = path[:i], path[i + 1:]
     try:
