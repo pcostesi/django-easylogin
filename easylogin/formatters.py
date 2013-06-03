@@ -6,7 +6,7 @@ def nine_numbers(user, salt, timestamp):
     user_hash.update(str(user.id))
     user_hash.update(user.username)
     number = int(user_hash.hexdigest(), 16)
-    return number % (10 * 9)
+    return str(number % (10 ** 9))
 
 
 def short_hex(user, salt, timestamp):

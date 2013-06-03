@@ -33,8 +33,8 @@ AUTH_CODE_TIMEOUT = getattr(settings, "AUTH_CODE_TIMEOUT", 60)
 AUTH_CODE_SALT = getattr(settings, "AUTH_CODE_SALT", settings.SECRET_KEY)
 AUTH_CODE_FORMATTERS = [import_by_path(elem) for elem in _AUTH_CODE_FORMATTERS_L]
 
-def _gen_user_key(user):
-    return "AUTH-EASYLOGIN-%d" % (user.id,)
+def _gen_user_key(user_id):
+    return "AUTH-EASYLOGIN-%d" % (user_id,)
 
 def _gen_auth_key(code):
     return "AUTH-EASYLOGIN-TOKEN-%s" % (code,)
@@ -48,9 +48,9 @@ def generate_access_codes(user):
     ts = _get_timestamp()
     salt = AUTH_CODE_SALT
     codes = [formatter(user, salt, ts) for formatter in AUTH_CODE_FORMATTERS]
-    formatted_codes = dict([(_gen_auth_key(code), user) for code in codes])
+    formatted_codes = dict([(_gen_auth_key(code), user.id) for code in codes])
     cache.set_many(formatted_codes, AUTH_CODE_TIMEOUT)
-    cache.set(_gen_user_key(user), codes, AUTH_CODE_TIMEOUT)
+    cache.set(_gen_user_key(user.id), codes, AUTH_CODE_TIMEOUT)
     return codes
 
 def generate_code(user):
@@ -61,16 +61,18 @@ def generate_code(user):
 
 def _get_user(*codes):
     for code in codes:
-        user = cache.get(_gen_auth_key(code))
-        if user:
-            return user
+        try:
+            user_id = cache.get(_gen_auth_key(code))
+            return User.objects.get(id=user_id)
+        except:
+            pass
 
 def consume_access_code(*codes):
     user = _get_user(*codes)
     if user:
-        all_codes = cache.get(_gen_user_key(user))
+        all_codes = cache.get(_gen_user_key(user.id))
         cache.delete_many(all_codes)
-        cache.delete(_gen_user_key(user))
+        cache.delete(_gen_user_key(user.id))
     return user
 
 
