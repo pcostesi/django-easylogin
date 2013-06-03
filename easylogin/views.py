@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from easylogin.auth import generate_access_code, AUTH_CODE_TIMEOUT
+from easylogin.auth import generate_code, AUTH_CODE_TIMEOUT
 from django.conf import settings
 from django.template.loader import render_to_string
 
@@ -23,7 +23,7 @@ ERROR_TEMPLATE = getattr(settings, "EASYLOGIN_ERROR_TEMPLATE",
 @login_required
 def gen_qr_code(request, auth_code=None):
     if not auth_code:
-        auth_code = generate_access_code(request.user)
+        auth_code = generate_code(request.user)
     current_site = get_current_site(request)
     scheme = request.is_secure() and "https" or "http"
     login_link = "".join([
@@ -48,7 +48,7 @@ def code_login(request, auth_code):
 
 @login_required
 def credentials_view(request):
-    auth_code = generate_access_code(request.user)
+    auth_code = generatecode(request.user)
     render_to_response(LOGIN_TEMPLATE, {
         "user": request.user,
         "auth_code": auth_code,
