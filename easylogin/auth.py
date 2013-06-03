@@ -1,8 +1,29 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.cache import cache
-from django.utils.module_loading import import_by_path
+from django.core.exceptions import ImproperlyConfigured
+from django.utils.importlib import import_module
+
 from time import time
+
+
+def import_by_path(module_name):
+    i = path.rfind('.')
+    module, attr = path[:i], path[i + 1:]
+    try:
+        mod = import_module(module)
+    except ImportError as e:
+        raise ImproperlyConfigured('Error importing formatting '
+            'backend %s: "%s"' % (path, e))
+    except ValueError:
+        raise ImproperlyConfigured('Error importing formatting '
+            'backends. Is AUTH_CODE_FORMATTERS a correctly defined '
+            'list or tuple?')
+    try:
+        return getattr(mod, attr)
+    except AttributeError:
+        raise ImproperlyConfigured('Module "%s" does not define a '
+            '"%s" formatting backend' % (module, attr))
 
 
 _formatters = ['easylogin.formatters.nine_numbers']
