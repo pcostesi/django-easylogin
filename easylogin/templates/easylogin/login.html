@@ -1,4 +1,7 @@
 <html>
-    <img src="{{qr_url}}" alt="{{auth_code}}">
-    <p>Your auth code is <strong>{{auth_code}}</strong>.</p>
+    <p>Please, input your auth code here:</p>
+    <form target={{target}}>
+        <input type="text" name="authCode">
+        <input type="submit">Login</input>
+    </form>
 </html>

@@ -13,6 +13,8 @@ from django.http import QueryDict
 
 import qrcode
 
+CREDENTIALS_TEMPLATE = getattr(settings, "EASYLOGIN_CREDENTIALS_TEMPLATE",
+    "easylogin/credentials.html")
 LOGIN_TEMPLATE = getattr(settings, "EASYLOGIN_LOGIN_TEMPLATE",
     "easylogin/login.html")
 ERROR_TEMPLATE = getattr(settings, "EASYLOGIN_ERROR_TEMPLATE",
@@ -26,6 +28,8 @@ def _make_query_url(url, query):
     return "%s?%s" % (url, encoded.urlencode())
 
 def reverse(target, **query):
+    if not query:
+        return django_reverse(target)
     return _make_query_url(django_reverse(target), query)
 
 @login_required
@@ -48,6 +52,10 @@ def gen_qr_code(request):
 
 def code_login(request):
     auth_code = request.GET.get("authCode")
+    if not auth_code:
+        return render_to_response(LOGIN_TEMPLATE, {
+            'target': reverse("easylogin_code_login")
+            })
     logout(request)
     user = authenticate(code=auth_code)
     if user is not None:
@@ -60,7 +68,7 @@ def code_login(request):
 @login_required
 def credentials_view(request):
     auth_code = generate_code(request.user)
-    return render_to_response(LOGIN_TEMPLATE, {
+    return render_to_response(CREDENTIALS_TEMPLATE, {
         "user": request.user,
         "auth_code": auth_code,
         "expires_in": AUTH_CODE_TIMEOUT,
