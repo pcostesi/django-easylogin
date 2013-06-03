@@ -53,7 +53,7 @@ def code_login(request, auth_code):
 @login_required
 def credentials_view(request):
     auth_code = generate_code(request.user)
-    render_to_response(LOGIN_TEMPLATE, {
+    return render_to_response(LOGIN_TEMPLATE, {
         "user": request.user,
         "auth_code": auth_code,
         "expires_in": AUTH_CODE_TIMEOUT,
