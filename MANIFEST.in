@@ -1,4 +1,4 @@
-include LICENCE.md README.md MANIFEST.in
+include LICENSE.md README.md MANIFEST.in
 recursive-include easylogin *.py
 recursive-include easylogin/templates *.html
 recursive-exclude * *.py[co]
