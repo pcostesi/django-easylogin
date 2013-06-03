@@ -4,6 +4,7 @@ from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.importlib import import_module
 
+from os import path
 from time import time
 
 
