@@ -13,9 +13,11 @@ from django.http import QueryDict
 
 import qrcode
 
-LOGIN_TEMPLATE = getattr(settings, "EASYLOGIN_LOGIN_TEMPLATE", "login.html")
+LOGIN_TEMPLATE = getattr(settings, "EASYLOGIN_LOGIN_TEMPLATE",
+    "easylogin/login.html")
+ERROR_TEMPLATE = getattr(settings, "EASYLOGIN_ERROR_TEMPLATE",
+    "easylogin/error.html")
 SUCCESS_REDIRECT = getattr(settings, "EASYLOGIN_REDIRECT_ON_SUCCESS", "/")
-ERROR_TEMPLATE = getattr(settings, "EASYLOGIN_ERROR_TEMPLATE", "error.html")
 
 
 def make_query_url(url, query):
