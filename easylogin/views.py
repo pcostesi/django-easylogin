@@ -48,7 +48,7 @@ def code_login(request, auth_code):
 
 @login_required
 def credentials_view(request):
-    auth_code = generatecode(request.user)
+    auth_code = generate_code(request.user)
     render_to_response(LOGIN_TEMPLATE, {
         "user": request.user,
         "auth_code": auth_code,

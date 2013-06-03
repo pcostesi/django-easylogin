@@ -46,6 +46,7 @@ def _get_timestamp():
 
 def generate_access_codes(user):
     ts = _get_timestamp()
+    salt = AUTH_CODE_SALT
     codes = [formatter(user, salt, ts) for formatter in AUTH_CODE_FORMATTERS]
     formatted_codes = dict([(_gen_auth_key(code), user) for code in codes])
     cache.set_many(formatted_codes, AUTH_CODE_TIMEOUT)
