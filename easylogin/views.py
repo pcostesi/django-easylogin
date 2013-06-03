@@ -52,7 +52,7 @@ def code_login(request):
     if user is not None:
         if user.is_active:
             login(request, user)
-            return HttpResponseRedirect(reverse(SUCCESS_REDIRECT))
+            return HttpResponseRedirect(SUCCESS_REDIRECT)
     txt = render_to_string(ERROR_TEMPLATE, {"auth_code": auth_code})
     return HttpResponseForbidden(txt)
 
