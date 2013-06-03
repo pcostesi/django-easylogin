@@ -1,7 +1,7 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.sites.models import get_current_site
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse as django_reverse
 from django.http import HttpResponse
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -20,10 +20,13 @@ ERROR_TEMPLATE = getattr(settings, "EASYLOGIN_ERROR_TEMPLATE",
 SUCCESS_REDIRECT = getattr(settings, "EASYLOGIN_REDIRECT_ON_SUCCESS", "/")
 
 
-def make_query_url(url, query):
+def _make_query_url(url, query):
     encoded = QueryDict('', mutable=True)
     encoded.update(query)
     return "%s?%s" % (url, encoded.urlencode())
+
+def reverse(target, **query):
+    return _make_query_url(django_reverse(target), query)
 
 @login_required
 def gen_qr_code(request):
@@ -36,7 +39,7 @@ def gen_qr_code(request):
         scheme,
         "://",
         current_site.domain,
-        reverse("easylogin_code_login", args=(auth_code,)),
+        reverse("easylogin_code_login", authCode=auth_code),
     ])
     img = qrcode.make(login_link)
     response = HttpResponse(mimetype="image/png")
@@ -59,7 +62,5 @@ def credentials_view(request):
         "user": request.user,
         "auth_code": auth_code,
         "expires_in": AUTH_CODE_TIMEOUT,
-        "qr_url": make_query_url(
-            reverse("easylogin_qr"),
-            {"authCode": auth_code})
+        "qr_url": reverse("easylogin_qr", authCode=auth_code),
         })
