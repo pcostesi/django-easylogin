@@ -32,6 +32,7 @@ _AUTH_CODE_FORMATTERS_L = getattr(settings, "AUTH_CODE_FORMATTERS", _formatters)
 AUTH_CODE_TIMEOUT = getattr(settings, "AUTH_CODE_TIMEOUT", 60)
 AUTH_CODE_SALT = getattr(settings, "AUTH_CODE_SALT", settings.SECRET_KEY)
 AUTH_CODE_FORMATTERS = [import_by_path(elem) for elem in _AUTH_CODE_FORMATTERS_L]
+AUTH_IGNORE_UA = getattr(settings, "AUTH_IGNORE_UA", [])
 
 def _gen_user_key(user_id):
     return "AUTH-EASYLOGIN-%d" % (user_id,)
@@ -77,10 +78,13 @@ def consume_access_code(*codes):
 
 
 class CodeLoginBackend(object):
-    def authenticate(self, code=None, codes=None, **kwargs):
+    def authenticate(self, code=None, codes=None, ua=None **kwargs):
         if code is None and codes is None:
             return None
         codes = codes or [code]
+        if (AUTH_IGNORE_UA and
+            any((sub_ua in ua) for sub_ua in AUTH_IGNORE_UA)):
+            return _get_user(*codes)
         return consume_access_code(*codes)
 
     def get_user(self, user_id):
