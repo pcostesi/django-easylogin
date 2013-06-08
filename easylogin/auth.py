@@ -78,7 +78,7 @@ def consume_access_code(*codes):
 
 
 class CodeLoginBackend(object):
-    def authenticate(self, code=None, codes=None, ua=None **kwargs):
+    def authenticate(self, code=None, codes=None, ua=None, **kwargs):
         if code is None and codes is None:
             return None
         codes = codes or [code]
