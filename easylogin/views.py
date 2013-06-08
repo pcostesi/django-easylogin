@@ -56,10 +56,10 @@ def code_login(request):
         return render_to_response(LOGIN_TEMPLATE, {
             'target': reverse("easylogin_code_login")
             })
-    logout(request)
     user = authenticate(code=auth_code)
     if user is not None:
         if user.is_active:
+            logout(request)
             login(request, user)
             return HttpResponseRedirect(SUCCESS_REDIRECT)
     txt = render_to_string(ERROR_TEMPLATE, {"auth_code": auth_code})
