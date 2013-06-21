@@ -82,7 +82,7 @@ class CodeLoginBackend(object):
         if code is None and codes is None:
             return None
         codes = codes or [code]
-        if not (AUTH_IGNORE_UA and
+        if (ua and AUTH_IGNORE_UA and
             any((sub_ua in ua) for sub_ua in AUTH_IGNORE_UA)):
             return _get_user(*codes)
         return consume_access_code(*codes)

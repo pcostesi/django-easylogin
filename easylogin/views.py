@@ -56,7 +56,8 @@ def code_login(request):
         return render_to_response(LOGIN_TEMPLATE, {
             'target': reverse("easylogin_code_login")
             })
-    user = authenticate(code=auth_code)
+    ua = request.META['HTTP_USER_AGENT']
+    user = authenticate(code=auth_code, ua=ua)
     if user is not None:
         if user.is_active:
             logout(request)

@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='django-easylogin',
-    version='0.0.7-a',
+    version='0.0.8',
     author='pcostesi',
     author_email='pcostesi@ieee.org',
     packages=['easylogin'],
