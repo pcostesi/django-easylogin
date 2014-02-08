@@ -14,5 +14,5 @@ setup(
         'mobile device (phone, tablet)'),
     long_description=open('README.md').read()[:-1],
     zip_safe=False,
-    install_requires=['qrcode', 'django', 'PIL'],
+    install_requires=['qrcode', 'django', 'pillow'],
 )
