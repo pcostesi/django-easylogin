@@ -104,6 +104,8 @@ class NineNumbersProvider(Provider):
 
     def is_valid_code(self, code):
         # get the user for this code
+        user = self.user_for_code(code)
         # then derive a second code
+        code2 = self.__derive_code(user)
         # and if both match, return True
-        pass
+        return code == code2
