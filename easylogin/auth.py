@@ -53,4 +53,4 @@ class CodeLoginBackend(object):
         if user is None:
             return
         module, name = self.__module__, self.__class__.__name__
-        return user.backend = '%s.%s' % (module, name)
+        user.backend = '%s.%s' % (module, name)
