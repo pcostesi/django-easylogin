@@ -25,8 +25,6 @@ def get_cache():
         return cache
 
 
-
-
 class Provider(object):
     __metaclass__ = ABCMeta
 

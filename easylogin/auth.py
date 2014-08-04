@@ -5,7 +5,6 @@ from collections import namedtuple
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.cache import cache
 from django.core.exceptions import ImproperlyConfigured
 
 from .util import import_string, get_provider
@@ -23,6 +22,7 @@ def get_backend():
     return backend
 
 ### Classes
+
 
 class CodeLoginBackend(object):
     
